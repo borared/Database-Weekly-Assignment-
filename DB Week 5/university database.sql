@@ -1,5 +1,5 @@
-create database UNIVERSITY;
-use UNIVERSITY;
+CREATE DATABASE IF NOT EXISTS UNIVERSITY;
+USE UNIVERSITY;
 
 CREATE TABLE DEPARTMENT (
     DepartmentCode VARCHAR(10) PRIMARY KEY,
@@ -28,7 +28,8 @@ CREATE TABLE STUDENT (
     MinorDeptCode VARCHAR(10),
     DegreeProgram ENUM('BA', 'BS', 'PHD'),
     FOREIGN KEY (MajorDeptCode) REFERENCES DEPARTMENT(DepartmentCode),
-    FOREIGN KEY (MinorDeptCode) REFERENCES DEPARTMENT(DepartmentCode)
+    FOREIGN KEY (MinorDeptCode) REFERENCES DEPARTMENT(DepartmentCode),
+    CONSTRAINT chk_sex CHECK (Sex IN ('M', 'F', 'O'))
 );
 
 CREATE TABLE COURSE (
@@ -38,9 +39,9 @@ CREATE TABLE COURSE (
     SemesterHours INT,
     Level VARCHAR(20),
     OfferingDeptCode VARCHAR(10),
-    FOREIGN KEY (OfferingDeptCode) REFERENCES DEPARTMENT(DepartmentCode)
+    FOREIGN KEY (OfferingDeptCode) REFERENCES DEPARTMENT(DepartmentCode),
+    CONSTRAINT chk_hours CHECK (SemesterHours > 0)
 );
-
 
 CREATE TABLE SECTION (
     SectionID INT AUTO_INCREMENT PRIMARY KEY,
@@ -49,15 +50,16 @@ CREATE TABLE SECTION (
     Semester VARCHAR(20),
     Year INT,
     CourseNumber VARCHAR(20),
-    FOREIGN KEY (CourseNumber) REFERENCES COURSE(CourseNumber)
+    FOREIGN KEY (CourseNumber) REFERENCES COURSE(CourseNumber),
+    CONSTRAINT chk_year CHECK (Year >= 1900)
 );
-
 
 CREATE TABLE GRADE_REPORT (
     StudentNumber INT,
     SectionID INT,
     Grade CHAR(2),
     PRIMARY KEY (StudentNumber, SectionID),
-    FOREIGN KEY (StudentNumber) REFERENCES STUDENT(StudentNumber),
-    FOREIGN KEY (SectionID) REFERENCES SECTION(SectionID)
+    FOREIGN KEY (StudentNumber) REFERENCES STUDENT(StudentNumber) ON DELETE CASCADE,
+    FOREIGN KEY (SectionID) REFERENCES SECTION(SectionID) ON DELETE CASCADE,
+    CONSTRAINT chk_grade CHECK (Grade IN ('A', 'B', 'C', 'D', 'F', 'I', 'W', 'P'))
 );
