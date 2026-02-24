@@ -27,7 +27,7 @@ CREATE TABLE ORDERS (
     ActualShipDate DATE,
     FOREIGN KEY (CustomerNumber) REFERENCES CUSTOMER(CustomerNumber),
     CONSTRAINT chk_dates CHECK (ExpectedShipDate >= DateOfReceipt),
-    CONSTRAINT chk_actual_ship CHECK (ActualShipDate >= DateOfReceipt OR ActualShipDate IS NULL)
+    CONSTRAINT chk_actual_ship CHECK (ActualShipDate >= DateOfReceipt)
 );
 
 
